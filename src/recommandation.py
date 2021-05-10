@@ -80,7 +80,7 @@ def get_col_unit(i):
 
 def display_result(title, col_list, results,tool,data):
     st.subheader(title)
-    for i in range(6):
+    for i in range(4):
         if tool == "Roberta":
             dis = results[i][1]
             st.write(dis)
