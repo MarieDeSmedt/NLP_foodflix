@@ -2,7 +2,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 from sentence_transformers import SentenceTransformer, models
-
+import streamlit as st
 
 def get_recommandation(user_input, df):
     vec = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=0, stop_words='english')
@@ -65,15 +65,39 @@ def get_col_unit(i):
         'brands': '',
         'categories': '',
         'nutrition_grade_fr': '',
-        'energy_100g': '',
-        'fat_100g': 'g/100',
-        'carbohydrates_100g': 'g/100',
-        'fiber_100g': 'g/100',
-        'sugars_100g': 'g/100',
-        'proteins_100g': 'g/100',
-        'fruits-vegetables-nuts_100g': 'g/100',
-        'salt_100g': 'g/100',
-        'sodium_100g': 'g/100',
-        'saturated-fat_100g': 'g/100 '
+        'energy_100g': 'kcal',
+        'fat_100g': 'g/100g',
+        'carbohydrates_100g': 'g/100g',
+        'fiber_100g': 'g/100g',
+        'sugars_100g': 'g/100g',
+        'proteins_100g': 'g/100g',
+        'fruits-vegetables-nuts_100g': 'g/100g',
+        'salt_100g': 'g/100g',
+        'sodium_100g': 'g/100g',
+        'saturated-fat_100g': 'g/100g '
     }
     return switcher.get(i, "Error")
+
+def display_result(title, col_list, results,tool,data):
+    st.subheader(title)
+    for i in range(6):
+        if tool == "Roberta":
+            dis = results[i][1]
+            st.write(dis)
+        else:
+            label = data['product_name'].iloc[results[i][1]]
+            my_expander = st.beta_expander(label, expanded=False)
+            with my_expander:
+                j = 0
+                for col in col_list:
+                    dis = data[col].iloc[results[i][1]]
+                    if j < 3:
+                        st.write(get_col_name(col), dis, get_col_unit(col))
+                    elif j < 5:
+                        col1, col2 = st.beta_columns(2)
+                        with col1:
+                            st.write(get_col_name(col), dis, get_col_unit(col))
+                    else:
+                        with col2:
+                            st.write(get_col_name(col), dis, get_col_unit(col))
+                    j += 1

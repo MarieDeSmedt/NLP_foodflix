@@ -4,29 +4,9 @@ sys.path.insert(0, "/home/apprenant/PycharmProjects/NLP_foodflix")
 import streamlit as st
 import pandas as pd
 
-from src.recommandation import get_recommandation, get_idea, get_bert, get_col_name, get_col_unit
+from src.recommandation import get_recommandation, get_idea, get_bert, get_col_name, get_col_unit,display_result
 
 
-def display_result(title, col_list, results):
-    st.subheader(title)
-    for i in range(4):
-        if tool == "Roberta":
-            dis = results[i][1]
-            st.write(dis)
-        else:
-            my_expander = st.beta_expander(data['product_name'].iloc[results[i][1]], expanded=False)
-            with my_expander:
-                j = 0
-                for col in col_list:
-                    dis = data[col].iloc[results[i][1]]
-                    if j <5:
-                        col1, col2 = st.beta_columns(2)
-                        with col1:
-                            st.write(get_col_name(col), dis, get_col_unit(col))
-                    else:
-                        with col2:
-                            st.write(get_col_name(col), dis, get_col_unit(col))
-                    j += 1
 
 
 # #####################################################################""
@@ -68,4 +48,4 @@ if new_input:
         results = get_bert(new_input, df)
         title = "Et avec bert?"
 
-    display_result(title, col_list, results)
+    display_result(title, col_list, results,tool,data)
