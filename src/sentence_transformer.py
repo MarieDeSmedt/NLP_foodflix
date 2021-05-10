@@ -3,36 +3,34 @@ import pandas as pd
 from sklearn.metrics.pairwise import linear_kernel
 from sentence_transformers import SentenceTransformer, models
 
+data = pd.read_csv('/home/apprenant/PycharmProjects/NLP_foodflix/data/01_raw/initial.csv')
 df = pd.read_csv('/home/apprenant/PycharmProjects/NLP_foodflix/data/02_intermediate/only_string.csv')
 df = df.rename(columns={df.columns[0]: "index"})
 df['content'] = df[['product_name', 'brands', 'generic_name', 'categories']].astype(str).apply(lambda x: ' // '.join(x),
                                                                                                axis=1)
 df['content'].fillna('Null', inplace=True)
 
-mymodel = models.Transformer('camembert-base')
-pooling_models = models.Pooling(mymodel.get_word_embedding_dimension(),
-                                pooling_mode_mean_tokens=True,
-                                pooling_mode_max_tokens=False)
-model = SentenceTransformer(modules =[mymodel, pooling_models])
+print(data.columns)
 
-
-sentence = ["je vveus une pizza au fromage"]
-sentences = df['content'].tolist()
-
-sentence_embeddings = model.encode(sentences)
-sentence_emb = model.encode(sentence)
-
-
-cosine_similarities = linear_kernel(sentence_emb, sentence_embeddings)
-results = {}
-similar_indices = cosine_similarities[0].argsort()[:-5:-1]
-results = [(cosine_similarities[0][i], sentences[i]) for i in similar_indices]
-print(results)
-
-
-
-
-
+# mymodel = models.Transformer('camembert-base')
+# pooling_models = models.Pooling(mymodel.get_word_embedding_dimension(),
+#                                 pooling_mode_mean_tokens=True,
+#                                 pooling_mode_max_tokens=False)
+# model = SentenceTransformer(modules =[mymodel, pooling_models])
+#
+#
+# sentence = ["chocolat"]
+# sentences = df['content'].head(15).tolist()
+#
+# sentence_embeddings = model.encode(sentences)
+# sentence_emb = model.encode(sentence)
+#
+#
+# cosine_similarities = linear_kernel(sentence_emb, sentence_embeddings)
+# results = {}
+# similar_indices = cosine_similarities[0].argsort()[:-5:-1]
+# results = [(cosine_similarities[0][i], sentences[i]) for i in similar_indices]
+# print(results)
 
 
 
